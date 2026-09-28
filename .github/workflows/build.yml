@@ -20,16 +20,22 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      - name: Extract CapAI
+        run: |
+          unzip -o CapAI-1.0.0-source.zip -d capai-source
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.10'
 
       - name: Build CapAI
-        run: gradle clean build
+        run: |
+          cd capai-source
+          gradle clean build
 
       - name: Upload CapAI JAR
         uses: actions/upload-artifact@v4
         with:
           name: CapAI-1.0.0
-          path: build/libs/*.jar
+          path: capai-source/build/libs/*.jar
