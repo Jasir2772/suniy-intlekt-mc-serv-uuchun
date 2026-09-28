@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,7 +21,9 @@ jobs:
 
       - name: Extract CapAI
         run: |
-          unzip -o CapAI-1.0.0-source.zip -d capai-source
+          ZIP=$(ls CapAI*.zip | head -n 1)
+          echo "Using $ZIP"
+          unzip -o "$ZIP" -d capai-source
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -30,12 +31,11 @@ jobs:
           gradle-version: '8.10'
 
       - name: Build CapAI
-        run: |
-          cd capai-source
-          gradle clean build
+        working-directory: capai-source
+        run: gradle clean build
 
       - name: Upload CapAI JAR
         uses: actions/upload-artifact@v4
         with:
-          name: CapAI-1.0.0
+          name: CapAI
           path: capai-source/build/libs/*.jar
